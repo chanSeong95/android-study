@@ -2,10 +2,15 @@ package com.example.myapplication
 
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.myapplication.databinding.ActivityMainBinding
+import com.example.myapplication.viewmodel.ItemViewModel
 
 class MainActivity : AppCompatActivity() {
+    private val viewModel by lazy {
+        ViewModelProvider(this, ViewModelProvider.NewInstanceFactory())[ItemViewModel::class.java]
+    }
     private lateinit var binding: ActivityMainBinding
     private lateinit var adapter: ItemAdapter
     private var itemCount = 0
@@ -16,7 +21,7 @@ class MainActivity : AppCompatActivity() {
         setContentView(binding.root)
 
         with(binding) {
-            adapter = ItemAdapter { position ->
+            adapter = ItemAdapter(viewModel) { position ->
                 adapter.removeItem(position)
             }
 

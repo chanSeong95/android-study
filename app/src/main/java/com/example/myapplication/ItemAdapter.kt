@@ -5,8 +5,9 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.example.myapplication.databinding.ItemTodoBinding
 import com.example.myapplication.model.Item
+import com.example.myapplication.viewmodel.ItemViewModel
 
-class ItemAdapter(private val datas: MutableList<Item> = mutableListOf(), private val onDeleteClick: (Int) -> Unit) : RecyclerView.Adapter<ItemAdapter.ItemViewHolder>() {
+class ItemAdapter(private val viewModel: ItemViewModel, private val onDeleteClick: (Int) -> Unit) : RecyclerView.Adapter<ItemAdapter.ItemViewHolder>() {
     private val visibleDatas = mutableListOf<Item>()
     private var currentFilter = Filter.ALL
 
@@ -26,23 +27,23 @@ class ItemAdapter(private val datas: MutableList<Item> = mutableListOf(), privat
     override fun getItemCount(): Int = visibleDatas.size
 
     fun addItem(text: String) {
-        datas.add(Item(text, false))
+        viewModel.add(Item(text, false))
         applyFilter(currentFilter)
     }
 
     fun removeItem(index: Int) {
-        datas.removeAt(index)
+        viewModel.remove(index)
         applyFilter(currentFilter)
     }
 
     fun applyFilter(filter: Filter) {
         currentFilter = filter
         visibleDatas.clear()
-˚
+
         val filtered = when (filter) {
-            Filter.ALL -> datas
-            Filter.ACTIVE -> datas.filter { !it.isDone }
-            Filter.DONE -> datas.filter { it.isDone }
+            Filter.ALL -> viewModel.get()
+            Filter.ACTIVE -> viewModel.filter { !it.isDone }
+            Filter.DONE -> viewModel.filter { it.isDone }
         }
 
         visibleDatas.addAll(filtered)
